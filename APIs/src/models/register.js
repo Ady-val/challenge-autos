@@ -24,4 +24,21 @@ registerModel.getRegister = (callback) => {
     }
 };
 
+registerModel.insertRegister = (registerData, callback) => {
+    if (connection) (
+        connection.query(
+            'INSERT INTO register SET ?', registerData,
+            (err, result) =>{
+                if (err){
+                    throw err;
+                } else {
+                    callback(null, {
+                        'InsertId': result.InsertId
+                    })
+                }
+            }
+        )
+    )
+}
+
 module.exports = registerModel;
