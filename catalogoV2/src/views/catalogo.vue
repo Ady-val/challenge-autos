@@ -1,5 +1,6 @@
 <template>
   <div class="container mt-5">
+    <!--################### Primer renglon ####################-->  
     <div class="row">
       <!--################### inicio de formulario ####################-->
       <div class="col-md-3">
@@ -172,6 +173,15 @@
           </section>
       </div>
       <!--################### fin de tabla ####################-->
+    </div>
+  <div class="row">
+    <div class="google-map" ref="googleMap"></div>
+        <template v-if="Boolean(this.google) && Boolean(this.map)">
+        <slot
+        :google="google"
+        :map="map"
+        />
+        </template>
     </div>
   </div>
 </template>
