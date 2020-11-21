@@ -46,7 +46,7 @@ app.get('/catalog/get_data/:user/:id_rol', (req, res) => {
     const id_rol = req.params.id_rol
     console.log('user: ' + user + " and rol: " + id_rol);
 
-    if (id_rol === 1) {
+    if (id_rol === '1') {
         var sql = 'SELECT * FROM cars';
 
         mysqlConnection.query(sql, (err, rows) => {
