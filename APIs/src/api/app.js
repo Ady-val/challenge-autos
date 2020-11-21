@@ -120,3 +120,32 @@ app.get('/catalog/get_data/:user/', (req, res) => {
         }
     })
 })
+
+app.put('catalog/add_car', (req, res) => {
+    const plates = req.body.plates
+    const brand = req.body.brand
+    const color = req.body.color
+    const year = req.body.year
+    const lat = req.body.lat
+    const lon = req.body.lon
+    const id_user = req.body.id_user
+
+    var sql = 'INSERT INTO cars (plates, brand, color, year, lat, lon, id_user, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
+
+    mysqlConnection.query(sql, [plates, brand, color, year, lat, lon, id_user], (err, rows) => {
+        if (!err) {
+            var package = {
+                status: 'success',
+                message: 'guardado con exito',
+            }
+
+            res.status(200).send(package);
+
+        } else {
+            res.status(500).json({
+                status: 'error',
+                message: '500'
+            });
+        }
+    })
+})
