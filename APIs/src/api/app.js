@@ -6,7 +6,7 @@ const app = express.Router();
 module.exports = app;
 
 app.get('/', (req, res) => {
-    res.send('Insisto en que ta bien bonita la Lily');
+    res.send('server corriendo');
 });
 
 app.get('/get_rol', (req, res) => {
@@ -136,8 +136,10 @@ app.post('/catalog/add_car/', (req, res) => {
 
     mysqlConnection.query(sql, [plates], (err, rows) => {
         console.log('llego al primer query');
+        console.log(rows);
         if (!err) {
             if (rows.length !== 0) {
+                console.log('llego a la condicion length');
                 var sql = 'INSERT INTO cars (plates, brand, color, year, lat, lon, id_user, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
 
                 mysqlConnection.query(sql, [plates, brand, color, year, lat, lon, id_user], (err, rows) => {
