@@ -45,7 +45,12 @@ app.get('/user/log_in/:username/:password', (req, res) => {
                 console.log('contra login: ' + password);
                 console.log('contra server: ' + server_password);
                 
-                res.status(200).json(jsonStatusPackage.opSuccess(data));
+                var package = {
+                    status: 'success',
+                    message: 'inicio con exito',
+                }
+
+                res.status(200).send(package);
 
                 //let isMatch = await comparePasswords(password, server_password);
 
