@@ -60,7 +60,7 @@ app.get('/catalog/get_data/:user/', (req, res) => {
                             var catalog = rows;
                             var package = {
                                 status: 'success',
-                                message: 'generos',
+                                message: 'cars',
                                 cars: catalog
                             }
         
