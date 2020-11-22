@@ -78,11 +78,19 @@ app.get('/user/log_in/:username/:password', (req, res) => {
 
             } else {
 
-                res.status(404).json(jsonStatusPackage.dataNotFound());
+                res.status(404).json({
+                    status: 'error',
+                    message: 'no existen datos disponibles'
+                });
+                console.log(err);
             }
         } else {
 
-            res.status(500).json(jsonStatusPackage.serverError());
+            res.status(500).json({
+                status: 'error',
+                message: 'no existen datos disponibles'
+            });
+            console.log(err);
         }
     });
 });
