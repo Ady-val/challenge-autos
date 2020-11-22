@@ -122,6 +122,8 @@ app.get('/catalog/get_data/:user/', (req, res) => {
 })
 
 app.post('/catalog/add_car/', (req, res) => {
+    console.log("conecta");
+    console.log(req.body);
     const plates = req.body.plates
     const brand = req.body.brand
     const color = req.body.color
@@ -208,4 +210,24 @@ app.post('/catalog/update_car/', (req, res) => {
 
 app.post('/catalog/delete_car/', (req, res) => {
     const plates = req.body.plates
+
+    var sql = 'UPDATE cars SET is_active WHERE plates = ?'
+
+    mysqlConnection.query(sql, [plates], (err, rows) => {
+        if (!err) {
+
+            var package = {
+                status: 'success',
+                message: 'eliminado con exito',
+            }
+
+            res.status(200).send(package);
+
+        } else {
+            res.status(500).json({
+                status: 'error',
+                message: '500'
+            });
+        }
+    })
 })
