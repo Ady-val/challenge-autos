@@ -203,6 +203,8 @@ app.post('/catalog/update_car/', (req, res) => {
                         status: 'error',
                         message: '500 query 2'
                     });
+                    console.log('query 2');
+                    console.log(err);
                 }
             })
         } else {
@@ -210,6 +212,8 @@ app.post('/catalog/update_car/', (req, res) => {
                 status: 'error',
                 message: '500 query 1'
             });
+            console.log('query 1');
+            console.log(err);
         }
     })
 })
