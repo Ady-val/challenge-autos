@@ -30,9 +30,7 @@ app.get('/user/log_in/:username/:password', (req, res) => {
 
 
             if (rows.length > 0) {
-
-                var id_user_status = rows[0].status;
-
+                
                 const server_password = rows[0].password;
                 const id_user = rows[0].id;
                 const id_user_type = rows[0].id_rol;
@@ -50,9 +48,11 @@ app.get('/user/log_in/:username/:password', (req, res) => {
                     message: 'inicio con exito',
                 }
 
-                res.status(200).send(package);
+                let isMatch = await comparePasswords(password, server_password);
 
-                //let isMatch = await comparePasswords(password, server_password);
+                console.log(isMatch);
+                
+                res.status(200).send(package);
 
                 /*if (isMatch) {
 
