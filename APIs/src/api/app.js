@@ -122,8 +122,9 @@ app.get('/catalog/get_data/:user/', (req, res) => {
 })
 
 app.post('/catalog/add_car/', (req, res) => {
+    console.log(req.body);
     const plates = req.body.plates
-    const brand = req.body.brand
+    const brand = req.body.model
     const color = req.body.color
     const year = req.body.year
     const lat = req.body.lat
