@@ -38,8 +38,7 @@ export default {
       axios
         .get('http://3.22.221.98:3000/user/log_in/' + this.user + '/' + this.password)
         .then((response) => {
-          console.log('SUCCESS')
-          console.log(response)
+          this.$router.push('/Cat')
         })
         .catch((e) => {
           console.log('ERROR')

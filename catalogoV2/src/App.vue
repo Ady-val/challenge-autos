@@ -18,7 +18,17 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      log: false
+    }
+  },
+  mounted () {
+    if (!this.log) {
+      this.$router.replace({ name: 'Inicio' })
+    }
+  }
 }
 </script>
 
