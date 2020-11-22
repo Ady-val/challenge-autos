@@ -165,8 +165,14 @@ app.post('/catalog/add_car/', (req, res) => {
                     message: 'ya existe ese carro con esas placas'
                 });
             }
+        } else {
+            console.log(err);
+            res.status(500).json({
+                status: 'error',
+                message: '500'
+            });
         }
-    })
+    }) 
 })
 
 app.post('/catalog/update_car/', (req, res) => {
