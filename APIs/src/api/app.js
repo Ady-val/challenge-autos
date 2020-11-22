@@ -132,7 +132,7 @@ app.post('/catalog/add_car/', (req, res) => {
     const lon = req.body.lon
     const id_user = req.body.id_user
 
-    var sql = 'SELECT TOP 1 * FROM cars WHERE plates = ?'
+    var sql = 'SELECT * FROM cars WHERE plates = ? LIMIT 1'
 
     mysqlConnection.query(sql, plates, (err, rows) => {
         console.log('llego al primer query');
