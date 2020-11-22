@@ -50,7 +50,7 @@ app.get('/catalog/get_data/:user/', (req, res) => {
     mysqlConnection.query(sql, [user], (err, rows) => {
         if (!err) {
             const id_rol = rows[0].id_rol
-
+            console.log('rol que saca: ' + id_rol);
             if (id_rol === '1') {
                 var sql = 'SELECT * FROM cars WHERE is_active = 1';
         
