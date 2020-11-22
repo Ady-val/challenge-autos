@@ -61,7 +61,7 @@ app.get('/catalog/get_data/:user/', (req, res) => {
                             var package = {
                                 status: 'success',
                                 message: 'generos',
-                                genders: catalog
+                                cars: catalog
                             }
         
                             res.status(200).send(package);
