@@ -36,13 +36,6 @@ app.get('/user/log_in/:username/:password', (req, res) => {
                 const id_user = rows[0].id;
                 const id_user_type = rows[0].id_rol;
                 const name = rows[0].name;
-
-                console.log(server_password);
-                console.log(id_user);
-                console.log(id_user_type);
-                console.log(name);
-                console.log('contra login: ' + password);
-                console.log('contra server: ' + server_password);
                 
                 var package = {
                     status: 'success',
@@ -51,31 +44,27 @@ app.get('/user/log_in/:username/:password', (req, res) => {
 
                 let isMatch = await comparePasswords(password, server_password);
 
-                console.log(isMatch);
+                if (isMatch) {
 
-                res.status(200).send(package);
+                    const data = {
 
-                /*if (isMatch) {
-
-                    if (id_user_status) {
-
-                        const data = {
-
-                            "id_user": id_user,
-                            "id_user_type": id_user_type,
-                            "user_name": name,
-                            "Auth_Bool": 1,
-                            "Authorized": "Yes"
-                        }
-                        res.status(200).json(jsonStatusPackage.opSuccess(data));
-                    } else {
-
-                        res.status(403).json(jsonStatusPackage.dataNotFound());
+                        status: 'success',
+                        message: 'cars',
+                        id_user: id_user,
+                        id_user_type: id_user_type,
+                        user_name: name,
+                        Auth_Bool: 1,
+                        Authorized: "Yes"
                     }
+                    res.status(200).send(data);
 
                 } else {
-                    res.status(403).json(jsonStatusPackage.accessDenied());
-                }*/
+                    res.status(403).json({
+                        status: 'error',
+                        message: 'access denied'
+                    });
+                    console.log(err);
+                }
 
             } else {
 
