@@ -122,8 +122,6 @@ app.get('/catalog/get_data/:user/', (req, res) => {
 })
 
 app.post('/catalog/add_car/', (req, res) => {
-    console.log("conecta");
-    console.log(req.body);
     const plates = req.body.plates
     const brand = req.body.brand
     const color = req.body.color
@@ -135,11 +133,8 @@ app.post('/catalog/add_car/', (req, res) => {
     var sql = 'SELECT * FROM cars WHERE plates = ? LIMIT 1'
 
     mysqlConnection.query(sql, plates, (err, rows) => {
-        console.log('llego al primer query');
-        console.log(rows);
         if (!err) {
             if (!rows.length) {
-                console.log('llego a la condicion length');
                 var sql = 'INSERT INTO cars (plates, brand, color, year, lat, lon, id_user, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
 
                 mysqlConnection.query(sql, [plates, brand, color, year, lat, lon, id_user], (err, rows) => {
@@ -153,6 +148,7 @@ app.post('/catalog/add_car/', (req, res) => {
                         res.status(200).send(package);
 
                     } else {
+                        console.log(err);
                         res.status(500).json({
                             status: 'error',
                             message: '500'
