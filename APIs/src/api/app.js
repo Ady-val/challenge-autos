@@ -186,7 +186,7 @@ app.post('/catalog/update_car/', (req, res) => {
         if (!err) {
             const id = rows[0].id
 
-            sql = 'UPDATE cars SET plates = ' + plates + ', brand = ' + brand + ', color = ' + color + ', year = ' + year + ', lat = ' + lat + ', lon = ' + lon + ' WHERE id = ' + id
+            sql = 'UPDATE cars SET plates = "' + plates + '", brand = "' + brand + '", color = "' + color + '", year = ' + year + ', lat = ' + lat + ', lon = ' + lon + ' WHERE id = ' + id
 
             mysqlConnection.query(sql, (err, rows) => {
                 if (!err) {
