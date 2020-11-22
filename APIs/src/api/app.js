@@ -138,7 +138,7 @@ app.post('/catalog/add_car/', (req, res) => {
         console.log('llego al primer query');
         console.log(rows);
         if (!err) {
-            if (rows.length === 0) {
+            if (!rows.length) {
                 console.log('llego a la condicion length');
                 var sql = 'INSERT INTO cars (plates, brand, color, year, lat, lon, id_user, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
 
