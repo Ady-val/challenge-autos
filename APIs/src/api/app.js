@@ -9,37 +9,78 @@ app.get('/', (req, res) => {
     res.send('server corriendo');
 });
 
-app.get('/get_rol', (req, res) => {
+comparePasswords = async (clientPassword, serverPassword) => {
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(clientPassword, serverPassword, (err, res) => {
+            err ? reject(err) : resolve(res);
+        });
+    });
+}
 
-    var sql = 'SELECT * FROM rol';
+app.get('/user/log_in/:username/:password', (req, res) => {
 
-    mysqlConnection.query(sql, (err, rows) => {
-        
+    const username = req.params.username;
+    const password = req.params.password;
+
+    var sql = 'SELECT password, id, id_rol, name, FROM user WHERE username = ?';
+
+    mysqlConnection.query(sql, username, async (err, rows) => {
+
         if (!err) {
-            if (rows.length > 0) {
-                var rol = rows;
-                var package = {
-                    status: 'success',
-                    message: 'generos',
-                    genders: rol
-                }
 
-                res.status(200).send(package);
+
+            if (rows.length > 0) {
+
+                var id_user_status = rows[0].status;
+
+                const server_password = rows[0].password;
+                const id_user = rows[0].id;
+                const id_user_type = rows[0].id_rol;
+                const name = rows[0].name;
+
+                console.log(server_password);
+                console.log(id_user);
+                console.log(id_user_type);
+                console.log(name);
+                console.log('contra login: ' + password);
+                console.log('contra server: ' + server_password);
+                
+                res.status(200).json(jsonStatusPackage.opSuccess(data));
+
+                //let isMatch = await comparePasswords(password, server_password);
+
+                /*if (isMatch) {
+
+                    if (id_user_status) {
+
+                        const data = {
+
+                            "id_user": id_user,
+                            "id_user_type": id_user_type,
+                            "user_name": name,
+                            "Auth_Bool": 1,
+                            "Authorized": "Yes"
+                        }
+                        res.status(200).json(jsonStatusPackage.opSuccess(data));
+                    } else {
+
+                        res.status(403).json(jsonStatusPackage.dataNotFound());
+                    }
+
+                } else {
+                    res.status(403).json(jsonStatusPackage.accessDenied());
+                }*/
 
             } else {
-                res.status(404).json({
-                    status: 'error',
-                    message: 'no existen datos disponibles'
-                });
+
+                res.status(404).json(jsonStatusPackage.dataNotFound());
             }
         } else {
-            res.status(500).json({
-                status: 'error',
-                message: '500'
-            });
+
+            res.status(500).json(jsonStatusPackage.serverError());
         }
-    })
-})
+    });
+});
 
 app.get('/catalog/get_data/:user/', (req, res) => {
     const user = req.params.user
