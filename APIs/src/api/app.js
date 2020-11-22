@@ -1,5 +1,6 @@
 const express = require('express');
 const mysqlConnection = require('../db/connection.js');
+const bcrypt = require('bcrypt');
 
 const app = express.Router();
 
@@ -51,7 +52,7 @@ app.get('/user/log_in/:username/:password', (req, res) => {
                 let isMatch = await comparePasswords(password, server_password);
 
                 console.log(isMatch);
-                
+
                 res.status(200).send(package);
 
                 /*if (isMatch) {
