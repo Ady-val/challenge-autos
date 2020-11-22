@@ -43,15 +43,13 @@ app.get('/get_rol', (req, res) => {
 
 app.get('/catalog/get_data/:user/', (req, res) => {
     const user = req.params.user
-    console.log('usuario que llega: ' + user);
 
     var sql = 'SELECT id_rol FROM user WHERE id = ?'
 
     mysqlConnection.query(sql, [user], (err, rows) => {
         if (!err) {
             const id_rol = rows[0].id_rol
-            console.log('rol que saca: ' + id_rol);
-            if (id_rol === '1') {
+            if (id_rol === 1) {
                 var sql = 'SELECT * FROM cars WHERE is_active = 1';
         
                 mysqlConnection.query(sql, (err, rows) => {
