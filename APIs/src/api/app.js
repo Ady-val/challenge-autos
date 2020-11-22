@@ -214,10 +214,10 @@ app.post('/catalog/update_car/', (req, res) => {
     })
 })
 
-app.post('/catalog/delete_car/', (req, res) => {
-    const plates = req.body.plates
-
-    var sql = 'UPDATE cars SET is_active WHERE plates = ?'
+app.post('/catalog/delete_car/:plates/', (req, res) => {
+    const plates = req.params.plates
+    console.log(plates);
+    var sql = 'UPDATE cars SET is_active = 0 WHERE plates = ?'
 
     mysqlConnection.query(sql, [plates], (err, rows) => {
         if (!err) {
