@@ -134,7 +134,7 @@ app.post('/catalog/add_car/', (req, res) => {
 
     var sql = 'SELECT TOP 1 * FROM cars WHERE plates = ?'
 
-    mysqlConnection.query(sql, [plates], (err, rows) => {
+    mysqlConnection.query(sql, plates, (err, rows) => {
         console.log('llego al primer query');
         console.log(rows);
         if (!err) {
