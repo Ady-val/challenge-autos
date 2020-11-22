@@ -22,7 +22,7 @@ app.get('/user/log_in/:username/:password', (req, res) => {
     const username = req.params.username;
     const password = req.params.password;
 
-    var sql = 'SELECT password, id, id_rol, name, FROM user WHERE username = ?';
+    var sql = 'SELECT password, id, id_rol, name FROM user WHERE username = ?';
 
     mysqlConnection.query(sql, username, async (err, rows) => {
 
