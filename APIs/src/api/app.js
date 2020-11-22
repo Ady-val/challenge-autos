@@ -201,14 +201,14 @@ app.post('/catalog/update_car/', (req, res) => {
                 } else {
                     res.status(500).json({
                         status: 'error',
-                        message: '500'
+                        message: '500 query 2'
                     });
                 }
             })
         } else {
             res.status(500).json({
                 status: 'error',
-                message: '500'
+                message: '500 query 1'
             });
         }
     })
@@ -216,7 +216,6 @@ app.post('/catalog/update_car/', (req, res) => {
 
 app.post('/catalog/delete_car/:plates/', (req, res) => {
     const plates = req.params.plates
-    console.log(plates);
     var sql = 'UPDATE cars SET is_active = 0 WHERE plates = ?'
 
     mysqlConnection.query(sql, [plates], (err, rows) => {
