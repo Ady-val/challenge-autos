@@ -61,14 +61,12 @@
               <b-form-input
                   id="input-5"
                   v-model="form.lat"
-                  type="number"
                   required
                   placeholder="Longitud"
                 ></b-form-input>
                 <b-form-input
                   id="input-6"
                   v-model="form.lon"
-                  type="number"
                   required
                   placeholder="Latitud"
                 ></b-form-input>
@@ -175,18 +173,22 @@
       <!--################### fin de tabla ####################-->
     </div>
   <div class="row">
-    <div class="google-map" ref="googleMap"></div>
-        <template v-if="Boolean(this.google) && Boolean(this.map)">
-        <slot
-        :google="google"
-        :map="map"
-        />
-        </template>
-    </div>
+    <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:840px; height:560px; margin: 32px auto;" ref="mapRef">
+          <GmapMarker
+                :key="index"
+                v-for="(m, index) in markers"
+                :position="m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+            />
+      </GmapMap>
   </div>
+</div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -208,28 +210,112 @@ export default {
       updateLon: '',
       cars: [],
       models: [{ text: 'Seleccione uno', value: null }, 'Nissan', 'Ford', 'Chevrolet', 'Otro...'],
-      show: true
+      show: true,
+      map: null,
+      myCoordinates: {
+        lat: 0,
+        lng: 0
+      },
+      zoom: 11,
+      markers: [
+        {position: {
+          lat: 28.6330,
+          lng: -106.0869
+        }}
+      ],
+      getPlates: ''
+    }
+  },
+  created () {
+    this.$getLocation({})
+      .then(coordinates => {
+        this.myCoordinates = coordinates
+      })
+      .catch(err => alert(err))
+  },
+  mounted () {
+    this.$refs.mapRef.$mapPromise.then(map => { this.map = map })
+    axios
+      .get('http://3.22.221.98:3000/catalog/get_data/' + 1)
+      .then((response) => {
+        const carsList = response.data.cars
+        for (var i = 0; i < carsList.length; i++) {
+          this.cars.push({
+            plates: carsList[i].plates,
+            color: carsList[i].color,
+            model: carsList[i].brand,
+            year: carsList[i].year,
+            lat: carsList[i].lat,
+            lon: carsList[i].lon
+          })
+        }
+      })
+      .catch((e) => {
+        console.log('----ERROR----')
+        console.log(e)
+      })
+  },
+  computed: {
+    mapCoordinates () {
+      if (!this.map) {
+        return {
+          lat: 0,
+          lng: 0
+        }
+      }
+
+      return {
+        lat: this.map.getCenter().lat().toFixed(4),
+        lng: this.map.getCenter().lng().toFixed(4)
+      }
     }
   },
   methods: {
+    // metodo para agregar un marcador en el mapa
+    addMarker (latitude, longitud) {
+      const marker = {
+        lat: parseFloat(latitude),
+        lng: parseFloat(longitud)
+      }
+      this.markers.push({position: marker})
+    },
     // Guardar campos
     onSubmit (evt) {
       evt.preventDefault()
-      this.cars.push({
-        plates: this.form.plates,
-        color: this.form.color,
-        model: this.form.model,
-        year: this.form.year,
-        lat: this.form.lat,
-        lon: this.form.lon
-      })
-      //
-      this.form.plates = ''
-      this.form.color = ''
-      this.form.model = null
-      this.form.year = ''
-      this.form.lat = ''
-      this.form.lon = ''
+      axios
+        .post('http://3.22.221.98:3000/catalog/add_car', {
+          plates: this.form.plates,
+          color: this.form.color,
+          model: this.form.model,
+          year: this.form.year,
+          lat: this.form.lat,
+          lon: this.form.lon,
+          id_user: 1
+        })
+        .then((response) => {
+          console.log('++++SUCCESS++++')
+          console.log(response.status)
+          console.log('###############')
+          this.cars.push({
+            plates: this.form.plates,
+            color: this.form.color,
+            model: this.form.model,
+            year: this.form.year,
+            lat: this.form.lat,
+            lon: this.form.lon
+          })
+          this.addMarker(this.form.lat, this.form.lon)
+          //
+          this.form.plates = ''
+          this.form.color = ''
+          this.form.model = null
+          this.form.year = ''
+          this.form.lat = ''
+          this.form.lon = ''
+        }).catch((e) => {
+          console.log('----ERROR----')
+          console.log(e)
+        })
     },
     // Limpiar campos
     onReset (evt) {
@@ -258,21 +344,50 @@ export default {
       this.updateYear = this.cars[plates].year
       this.updateLat = this.cars[plates].lat
       this.updateLon = this.cars[plates].lon
+      //
+      this.getPlates = this.cars[plates].plates
     },
     // borra uno de los datos de la tabla
     deletedCar (plates) {
-      this.cars.splice(plates, 1)
+      axios
+        .post('http://3.22.221.98:3000/catalog/delete_car/' + this.cars[plates].plates)
+        .then((response) => {
+          this.cars.splice(plates, 1)
+          console.log(response.status)
+        })
+        .catch((e) => {
+          console.log('----ERROR----')
+          console.log(e)
+        })
     },
     // guarda la actualizacion hecha en la tabla
     saveUpdateCar (plates) {
-      this.updateForm = false
-      //
-      this.cars[plates].plates = this.updatePlates
-      this.cars[plates].color = this.updateColor
-      this.cars[plates].model = this.updateModel
-      this.cars[plates].year = this.updateYear
-      this.cars[plates].lat = this.updateLat
-      this.cars[plates].lon = this.updateLon
+      axios
+        .post('http://3.22.221.98:3000/catalog/update_car/', {
+          last_plates: this.getPlates,
+          plates: this.updatePlates,
+          brand: this.updateModel,
+          color: this.updateColor,
+          year: this.updateYear,
+          lat: this.updateLat,
+          lon: this.updateLon
+        })
+        .then((response) => {
+          console.log(response.status)
+          //
+          this.updateForm = false
+          //
+          this.cars[plates].plates = this.updatePlates
+          this.cars[plates].color = this.updateColor
+          this.cars[plates].model = this.updateModel
+          this.cars[plates].year = this.updateYear
+          this.cars[plates].lat = this.updateLat
+          this.cars[plates].lon = this.updateLon
+        })
+        .catch((e) => {
+          console.log('----ERROR----')
+          console.log(e)
+        })
     }
   }
 }

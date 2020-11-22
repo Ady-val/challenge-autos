@@ -10,7 +10,16 @@
             <p>{{mapCoordinates.lat}} Latitud, {{mapCoordinates.lng}} Longitud</p>
         </div>
       </div>
-      <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:640px; height:360px; margin: 32px auto;" ref="mapRef"></GmapMap>
+      <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:640px; height:360px; margin: 32px auto;" ref="mapRef">
+          <GmapMarker
+                :key="index"
+                v-for="(m, index) in markers"
+                :position="m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+            />
+      </GmapMap>
   </div>
 </template>
 
@@ -23,7 +32,18 @@ export default {
         lat: 0,
         lng: 0
       },
-      zoom: 7
+      zoom: 7,
+      markers: [
+        {position: {
+          lat: 28.8481,
+          lng: -106.2738
+        },
+        /* eslint-disable-next-line */
+        position: {
+          lat: 29.9581,
+          lng: -106.2738
+        }}
+      ]
     }
   },
   created () {
