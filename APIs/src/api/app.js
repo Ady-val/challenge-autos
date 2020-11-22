@@ -43,6 +43,7 @@ app.get('/get_rol', (req, res) => {
 
 app.get('/catalog/get_data/:user/', (req, res) => {
     const user = req.params.user
+    console.log('usuario que llega: ' + user);
 
     var sql = 'SELECT id_rol FROM user WHERE id = ?'
 
@@ -91,8 +92,8 @@ app.get('/catalog/get_data/:user/', (req, res) => {
                             var catalog = rows;
                             var package = {
                                 status: 'success',
-                                message: 'generos',
-                                genders: catalog
+                                message: 'cars',
+                                cars: catalog
                             }
         
                             res.status(200).send(package);
