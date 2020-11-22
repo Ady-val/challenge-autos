@@ -135,11 +135,13 @@ app.post('/catalog/add_car/', (req, res) => {
     var sql = 'SELECT TOP 1 * FROM cars WHERE plates = ?'
 
     mysqlConnection.query(sql, [plates], (err, rows) => {
+        console.log('llego al primer query');
         if (!err) {
             if (rows.length !== 0) {
                 var sql = 'INSERT INTO cars (plates, brand, color, year, lat, lon, id_user, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
 
                 mysqlConnection.query(sql, [plates, brand, color, year, lat, lon, id_user], (err, rows) => {
+                    console.log('llego al segundo query');
                     if (!err) {
                         var package = {
                             status: 'success',
