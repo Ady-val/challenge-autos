@@ -145,7 +145,7 @@
                         <!--Latitud-->
                         <td>
                           <span v-if="updateForm && lisId == index">
-                            <input v-model="updateLat" type="number" class="form-control">
+                            <input v-model="updateLat" class="form-control">
                           </span>
                           <span v-else>
                             {{car.lat}}
@@ -154,7 +154,7 @@
                         <!--Longitud-->
                         <td>
                           <span v-if="updateForm && lisId == index">
-                            <input v-model="updateLon" type="number" class="form-control">
+                            <input v-model="updateLon" class="form-control">
                           </span>
                           <span v-else>
                             {{car.lon}}
@@ -181,7 +181,7 @@
       <!--################### fin de tabla ####################-->
     </div>
     <div class="row">
-      <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:840px; height:560px; margin: 32px auto;" ref="mapRef">
+      <GmapMap :center="{lat:28.6711604, lng:-106.0996488}" :zoom="zoom" style="width:840px; height:560px; margin: 32px auto;" ref="mapRef">
             <GmapMarker
                   :key="index"
                   v-for="(m, index) in markers"
@@ -226,12 +226,7 @@ export default {
         lng: 0
       },
       zoom: 11,
-      markers: [
-        {position: {
-          lat: 28.6330,
-          lng: -106.0869
-        }}
-      ],
+      markers: [],
       getPlates: '',
       user_name: '',
       type: ''
@@ -270,12 +265,19 @@ export default {
               lat: carsList[i].lat,
               lon: carsList[i].lon
             })
+            var marker = {
+              lat: carsList[i].lat,
+              lng: carsList[i].lon
+            }
+            this.markers.push({position: marker})
           }
         })
         .catch((e) => {
           console.log('----ERROR----')
           console.log(e)
         })
+      let map = this.$refs.map
+      map.dropMarker({lan: 28.6750, lng: -106.1031})
     }
   },
   computed: {
