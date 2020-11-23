@@ -342,6 +342,7 @@ export default {
           this.form.year = ''
           this.form.lat = ''
           this.form.lon = ''
+          this.onReset()
         }).catch((e) => {
           console.log('----ERROR----')
           console.log(e)
