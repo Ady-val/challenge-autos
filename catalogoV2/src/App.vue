@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import cookieJar from '@/logic/cookieJar'
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -21,10 +22,20 @@ export default {
   name: 'app',
   data () {
     return {
-      log: false
+      log: false,
+      user_name: '',
+      type: ''
     }
   },
   mounted () {
+    if (cookieJar.getIdUserTypeLogged() === 1) {
+      this.type = 'Admin'
+    } else {
+      this.type = 'User'
+    }
+    this.user_name = cookieJar.getNameUserLogged()
+    this.log = cookieJar.getUserLogged()
+    console.log(this.log)
     if (!this.log) {
       this.$router.replace({ name: 'Inicio' })
     }

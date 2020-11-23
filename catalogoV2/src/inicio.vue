@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import cookieJar from '@/logic/cookieJar'
 import axios from 'axios'
 export default {
   data () {
@@ -38,6 +39,8 @@ export default {
       axios
         .get('http://3.22.221.98:3000/user/log_in/' + this.user + '/' + this.password)
         .then((response) => {
+          console.log(response)
+          cookieJar.setUserLogged(response.data.id_user, response.data.user_name, response.data.id_user_type)
           this.$router.push('/Cat')
         })
         .catch((e) => {

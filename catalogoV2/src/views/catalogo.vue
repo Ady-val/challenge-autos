@@ -1,6 +1,14 @@
 <template>
   <div class="container mt-5">
-    <!--################### Primer renglon ####################-->  
+    <!--################### Primer renglon ####################-->
+    <div class="row">
+      <div class="col-md-6" align="left">
+        <h4>Usurario: {{user_name}} | Tipo: {{type}}</h4>
+      </div>
+      <div class="col-md-6" align='right'>
+        <b-button @click="logout">Logout</b-button>
+      </div>
+    </div>
     <div class="row">
       <!--################### inicio de formulario ####################-->
       <div class="col-md-3">
@@ -172,22 +180,23 @@
       </div>
       <!--################### fin de tabla ####################-->
     </div>
-  <div class="row">
-    <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:840px; height:560px; margin: 32px auto;" ref="mapRef">
-          <GmapMarker
-                :key="index"
-                v-for="(m, index) in markers"
-                :position="m.position"
-                :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
-            />
-      </GmapMap>
-  </div>
+    <div class="row">
+      <GmapMap :center="{lat:myCoordinates.lat, lng:myCoordinates.lng}" :zoom="zoom" style="width:840px; height:560px; margin: 32px auto;" ref="mapRef">
+            <GmapMarker
+                  :key="index"
+                  v-for="(m, index) in markers"
+                  :position="m.position"
+                  :clickable="true"
+                  :draggable="true"
+                  @click="center=m.position"
+              />
+        </GmapMap>
+    </div>
 </div>
 </template>
 
 <script>
+import cookieJar from '@/logic/cookieJar'
 import axios from 'axios'
 export default {
   data () {
@@ -223,7 +232,9 @@ export default {
           lng: -106.0869
         }}
       ],
-      getPlates: ''
+      getPlates: '',
+      user_name: '',
+      type: ''
     }
   },
   created () {
@@ -234,26 +245,38 @@ export default {
       .catch(err => alert(err))
   },
   mounted () {
-    this.$refs.mapRef.$mapPromise.then(map => { this.map = map })
-    axios
-      .get('http://3.22.221.98:3000/catalog/get_data/' + 1)
-      .then((response) => {
-        const carsList = response.data.cars
-        for (var i = 0; i < carsList.length; i++) {
-          this.cars.push({
-            plates: carsList[i].plates,
-            color: carsList[i].color,
-            model: carsList[i].brand,
-            year: carsList[i].year,
-            lat: carsList[i].lat,
-            lon: carsList[i].lon
-          })
-        }
-      })
-      .catch((e) => {
-        console.log('----ERROR----')
-        console.log(e)
-      })
+    console.log(cookieJar.getUserLogged())
+    if (cookieJar.getUserLogged() === 'false') {
+      this.$router.replace({name: 'Inicio'})
+    } else {
+      console.log(cookieJar.getIdUserLogged())
+      if (cookieJar.getIdUserTypeLogged() === '1') {
+        this.type = 'Admin'
+      } else {
+        this.type = 'User'
+      }
+      this.user_name = cookieJar.getNameUserLogged()
+      this.$refs.mapRef.$mapPromise.then(map => { this.map = map })
+      axios
+        .get('http://3.22.221.98:3000/catalog/get_data/' + cookieJar.getIdUserLogged())
+        .then((response) => {
+          const carsList = response.data.cars
+          for (var i = 0; i < carsList.length; i++) {
+            this.cars.push({
+              plates: carsList[i].plates,
+              color: carsList[i].color,
+              model: carsList[i].brand,
+              year: carsList[i].year,
+              lat: carsList[i].lat,
+              lon: carsList[i].lon
+            })
+          }
+        })
+        .catch((e) => {
+          console.log('----ERROR----')
+          console.log(e)
+        })
+    }
   },
   computed: {
     mapCoordinates () {
@@ -271,6 +294,11 @@ export default {
     }
   },
   methods: {
+    logout () {
+      console.log('corre')
+      cookieJar.userLogout()
+      this.$router.replace({name: 'Inicio'})
+    },
     // metodo para agregar un marcador en el mapa
     addMarker (latitude, longitud) {
       const marker = {
