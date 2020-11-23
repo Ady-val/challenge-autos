@@ -49,7 +49,7 @@ app.get('/user/log_in/:username/:password', (req, res) => {
                     const data = {
 
                         status: 'success',
-                        message: 'cars',
+                        message: 'inicio de sesion con exito',
                         id_user: id_user,
                         id_user_type: id_user_type,
                         user_name: name,
